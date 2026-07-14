@@ -1,7 +1,4 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -18,7 +15,7 @@
   body{
     background:var(--ink);
     color:var(--bone);
-    font-family:'Manrope',system-ui,sans-serif;
+    font-family:'Segoe UI',system-ui,sans-serif;
     padding:32px 20px 60px;
     -webkit-font-smoothing:antialiased;
   }
@@ -26,12 +23,12 @@
 
   /* header */
   .eyebrow{
-    font-family:'JetBrains Mono',monospace;
+    font-family:Consolas,monospace;
     font-size:11px;letter-spacing:.18em;text-transform:uppercase;
     color:var(--muted);margin-bottom:14px;
   }
   h1{
-    font-family:'Unbounded','Manrope',sans-serif;
+    font-family:'Segoe UI',sans-serif;
     font-weight:600;font-size:clamp(30px,6vw,46px);
     line-height:1.02;letter-spacing:-.02em;margin-bottom:26px;
   }
@@ -39,7 +36,7 @@
 
   .meter{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
   .meter .big{
-    font-family:'Unbounded',sans-serif;font-size:34px;font-weight:600;
+    font-family:'Segoe UI',sans-serif;font-size:34px;font-weight:600;
     line-height:1;color:var(--gold);
   }
   .meter .lbl{font-size:13px;color:var(--muted)}
@@ -53,9 +50,9 @@
   }
   .panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
   .panel-head h2{
-    font-family:'Unbounded',sans-serif;font-size:15px;font-weight:400;letter-spacing:.01em;
+    font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:400;letter-spacing:.01em;
   }
-  .daytag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.08em}
+  .daytag{font-family:Consolas,monospace;font-size:11px;color:var(--muted);letter-spacing:.08em}
   .daytag b{color:var(--violet);font-weight:500}
 
   .task{
@@ -78,17 +75,9 @@
   .task.on span{color:var(--muted);text-decoration:line-through;text-decoration-color:#C0C0C8}
   .task:hover .box{border-color:var(--gold)}
 
-  textarea{
-    width:100%;margin-top:16px;background:transparent;border:1px solid var(--line);
-    border-radius:var(--r);color:var(--bone);font-family:'Manrope',sans-serif;font-size:14px;
-    padding:11px 12px;resize:vertical;min-height:64px;line-height:1.5;
-  }
-  textarea:focus{outline:none;border-color:var(--violet)}
-  textarea::placeholder{color:#A0A0AA}
-
   /* grid */
   .section-label{
-    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;
+    font-family:Consolas,monospace;font-size:11px;letter-spacing:.16em;
     text-transform:uppercase;color:var(--muted);margin-bottom:14px;
   }
   .grid{
@@ -113,13 +102,13 @@
   .stat .name{flex:1;font-size:14px}
   .stat .track{width:96px;height:2px;background:var(--line);flex:none;position:relative}
   .stat .track i{position:absolute;inset:0 auto 0 0;background:var(--violet);width:0;transition:width .5s ease}
-  .stat .pct{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);width:38px;text-align:right;flex:none}
+  .stat .pct{font-family:Consolas,monospace;font-size:12px;color:var(--muted);width:38px;text-align:right;flex:none}
 
   footer{margin-top:36px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
   .note{font-size:12px;color:var(--muted);line-height:1.6}
   button.reset{
     background:none;border:1px solid var(--line);color:var(--muted);
-    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;
+    font-family:Consolas,monospace;font-size:11px;letter-spacing:.08em;
     padding:8px 12px;border-radius:var(--r);cursor:pointer;transition:.16s;
   }
   button.reset:hover{border-color:#B0554B;color:#A3453B}
@@ -145,7 +134,7 @@ const TASKS = [
   "Запись в дневник"
 ];
 const KEY = "project50";
-let state = null;      // {start:"YYYY-MM-DD", days:{date:[0/1 x6]}, notes:{date:str}}
+let state = null;      // {start:"YYYY-MM-DD", days:{date:[0/1 x6]}}
 let selected = null;
 
 const iso = d => d.toISOString().slice(0,10);
@@ -159,11 +148,10 @@ async function load(){
     const r = await window.storage.get(KEY);
     state = JSON.parse(r.value);
   }catch(e){
-    state = { start: today(), days:{}, notes:{} };
+    state = { start: today(), days:{} };
     await save();
   }
   if(!state.days) state.days={};
-  if(!state.notes) state.notes={};
   selected = today();
   render();
 }
@@ -206,7 +194,6 @@ function render(){
         <div class="task ${m[i]?"on":""}" data-i="${i}" tabindex="0" role="checkbox" aria-checked="${!!m[i]}">
           <div class="box"></div><span>${t}</span>
         </div>`).join("")}
-      <textarea id="note" placeholder="Дневник: как прошёл день, что мешало, что сработало">${state.notes[selected]||""}</textarea>
     </div>
 
     <div class="section-label">Полотно · 6 полос = 6 привычек</div>
@@ -253,16 +240,9 @@ function render(){
     el.onclick = () => { selected = el.dataset.d; render(); };
   });
 
-  const note = document.getElementById("note");
-  let t;
-  note.oninput = () => {
-    clearTimeout(t);
-    t = setTimeout(()=>{ state.notes[selected] = note.value; save(); }, 500);
-  };
-
   document.getElementById("reset").onclick = async () => {
     if(!confirm("Стереть весь прогресс и начать челлендж с сегодняшнего дня?")) return;
-    state = { start: today(), days:{}, notes:{} };
+    state = { start: today(), days:{} };
     selected = today();
     await save(); render();
   };
