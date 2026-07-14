@@ -143,20 +143,20 @@ const addDays = (isoStr,n) => { const d=new Date(isoStr+"T12:00:00"); d.setDate(
 const daysBetween = (a,b) => Math.round((new Date(b+"T12:00:00") - new Date(a+"T12:00:00"))/864e5);
 const fmt = s => new Date(s+"T12:00:00").toLocaleDateString("ru-RU",{day:"numeric",month:"long"});
 
-async function load(){
+function load(){
   try{
-    const r = await window.storage.get(KEY);
-    state = JSON.parse(r.value);
+    state = JSON.parse(localStorage.getItem(KEY));
+    if(!state) throw new Error("no saved state");
   }catch(e){
     state = { start: today(), days:{} };
-    await save();
+    save();
   }
   if(!state.days) state.days={};
   selected = today();
   render();
 }
-async function save(){
-  try{ await window.storage.set(KEY, JSON.stringify(state)); }
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }
   catch(e){ console.error("Не удалось сохранить:", e); }
 }
 
